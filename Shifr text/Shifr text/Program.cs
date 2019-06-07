@@ -118,6 +118,7 @@ namespace Shifr_text
         }
         static void Main()
         {
+            bool ok = false;
             string stroka = null;
             Again:
             Console.Clear();
@@ -125,15 +126,41 @@ namespace Shifr_text
             {
                 case 1:
                     stroka = InputText();
+                    ok = true;
                     goto Again;
                 case 2:
-                    stroka = EncryptText(stroka);
+                    if (ok)
+                    {
+                        stroka = EncryptText(stroka);
+                        Color.Print("\n Зашифровано!", ConsoleColor.Magenta);
+                    }
+                    else
+                    {
+                        Color.Print("\n Сперва введите текст!", ConsoleColor.Red);
+                    }
+                    Text.GoBackMenu();
                     goto Again;
                 case 3:
-                    stroka = DecryptText(stroka);
+                    if (ok)
+                    {
+                        stroka = DecryptText(stroka);
+                        Color.Print("\n Расшифровано!", ConsoleColor.Magenta);
+                    }
+                    else
+                    {
+                        Color.Print("\n Сперва введите текст!", ConsoleColor.Red);
+                    }
+                    Text.GoBackMenu();
                     goto Again;
                 case 4:
-                    Color.Print("Ваша строка выглядит так: " + stroka, ConsoleColor.Green);
+                    if(ok)
+                    {
+                        Color.Print("Ваша строка выглядит так: " + stroka, ConsoleColor.Green);
+                    }
+                    else
+                    {
+                        Color.Print("\n Сперва введите текст!", ConsoleColor.Red);
+                    }
                     Text.GoBackMenu();
                     goto Again;
                 case 5:
