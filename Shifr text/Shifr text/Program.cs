@@ -50,53 +50,75 @@ namespace Shifr_text
         }
         private static string EncryptText(string text)
         {
-            matr = new string[11,11];
+            string stroka = null;
+            const int n = 11;
+            const int m = 11;
+            matr = new string[n, m];
             DoMatr(text);
-            string stroka = matr[5, 5];
-            stroka = stroka + matr[5,6];
-            for (int j = 6; j > 3; j--)
-                stroka = stroka + matr[4,j];
-            for (int i = 5; i < 7; i++)
-                stroka = stroka + matr[i,4];
-            for (int j = 5; j < 8; j++)
-                stroka = stroka + matr[6, j];
-            for (int i = 5; i > 2; i--)
-                stroka = stroka + matr[i, 7];
-            for (int j = 6; j > 2; j--)
-                stroka = stroka + matr[3, j];
-            for (int i = 4; i < 8; i++)
-                stroka = stroka + matr[i, 3];
-            for (int j = 4; j < 9; j++)
-                stroka = stroka + matr[7, j];
-            for (int i = 6; i > 1; i--)
-                stroka = stroka + matr[i, 8];
-            for (int j = 7; j > 1; j--)
-                stroka = stroka + matr[2, j];
-            for (int i = 3; i < 9; i++)
-                stroka = stroka + matr[i, 2];
-            for (int j = 3; j < 10; j++)
-                stroka = stroka + matr[8, j];
-            for (int i = 7; i > 0; i--)
-                stroka = stroka + matr[i, 9];
-            for (int j = 8; j > 0; j--)
-                stroka = stroka + matr[1, j];
-            for (int i = 2; i < 10; i++)
-                stroka = stroka + matr[i, 1];
-            for (int j = 2; j < 11; j++)
-                stroka = stroka + matr[9, j];
-            for (int i = 8; i > -1; i--)
-                stroka = stroka + matr[i, 10];
-            for (int j = 9; j > -1; j--)
-                stroka = stroka + matr[0, j];
-            for (int i = 1; i < 11; i++)
-                stroka = stroka + matr[i, 0];
-            for (int j = 1; j < 11; j++)
-                stroka = stroka + matr[10, j];
+
+            int row = 0;
+            int col = 0;
+            int dx = 1;
+            int dy = 0;
+            int dirChanges = 0;
+            int visits = m;
+
+            for (int i = 0; i < matr.Length; i++)
+            {
+                stroka = stroka + matr[row, col];
+                if (--visits == 0)
+                {
+                    visits = m * (dirChanges % 2) + n * ((dirChanges + 1) % 2) - (dirChanges / 2 - 1) - 2;
+                    int temp = dx;
+                    dx = -dy;
+                    dy = temp;
+                    dirChanges++;
+                }
+
+                col += dx;
+                row += dy;
+            }
+            return new string(stroka.ToCharArray().Reverse().ToArray());
+        }
+        private static string DecryptText(string text)
+        {
+            string stroka = new string(text.ToCharArray().Reverse().ToArray());
+            char[] array = stroka.ToCharArray();
+            const int n = 11;
+            const int m = 11;
+            matr = new string[n, m];
+
+            int row = 0;
+            int col = 0;
+            int dx = 1;
+            int dy = 0;
+            int dirChanges = 0;
+            int visits = m;
+
+            for (int i = 0; i < matr.Length; i++)
+            {
+                matr[row, col] = Convert.ToString(array[i]);
+                if (--visits == 0)
+                {
+                    visits = m * (dirChanges % 2) + n * ((dirChanges + 1) % 2) - (dirChanges / 2 - 1) - 2;
+                    int temp = dx;
+                    dx = -dy;
+                    dy = temp;
+                    dirChanges++;
+                }
+
+                col += dx;
+                row += dy;
+            }
+            stroka = null;
+            for (int i = 0; i < 11; i++)
+                for (int j = 0; j < 11; j++)
+                    stroka = stroka + matr[i,j];
             return stroka;
         }
         static void Main()
         {
-            string stroka = "";
+            string stroka = null;
             Again:
             Console.Clear();
             switch(Menu())
@@ -108,6 +130,7 @@ namespace Shifr_text
                     stroka = EncryptText(stroka);
                     goto Again;
                 case 3:
+                    stroka = DecryptText(stroka);
                     goto Again;
                 case 4:
                     Color.Print("Ваша строка выглядит так: " + stroka, ConsoleColor.Green);
